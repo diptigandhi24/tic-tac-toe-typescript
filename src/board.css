@@ -1,0 +1,7 @@
+ul{
+    list-style-type:none;
+    display: inline-block;
+    margin:100px 0px 0px;
+    padding:0px;
+    /* flex-direction: column; */
+}
