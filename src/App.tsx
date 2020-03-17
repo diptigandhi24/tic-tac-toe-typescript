@@ -1,24 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { RegisterPlayer } from './registerPlayer';
+import Home from './Home';
 import Board from './board';
-import {RegisterPlayer} from './registerPlayer';
-import Home from './Home'
-import { Route,Link , BrowserRouter as Router, Switch } from 'react-router-dom';
+import AddSecondPlayer from './addSecondPlayer';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 function App() {
-  return (
-    <Router>
-    <div className="App">
-
-      
-      <Switch>
-      <Route path="/registerPlayer" component={RegisterPlayer}/>
-      <Route path="/" component={Home}/>
-      </Switch>
-      </div>
-    </Router>
-    
-  );
+    return (
+        <Router>
+            <div className="App">
+                <Switch>
+                    <Route path="/registerPlayer" component={RegisterPlayer} />
+                    <Route path="/" exact component={Home} />
+                    <Route path="/board" render={(name)=><AddSecondPlayer name={name}}/>
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;

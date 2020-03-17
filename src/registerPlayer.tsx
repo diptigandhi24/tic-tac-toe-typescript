@@ -1,20 +1,49 @@
-import React ,{useState}from 'react';
+import React, { useState } from 'react';
 
+import SubmitPlayer from './submitPlayer';
+import RegisteredGame from './RegisteredGame';
+import createRequest from './GameApi';
+import Board from './board';
+import { Link } from 'react-router-dom';
+import { useHistory, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
+const RegisterPlayer: React.FC = () => {
+    const [serverResponse, setServerResponse] = useState('');
+    const history = useHistory();
 
+    const [playerName, setPlayerName] = useState('');
 
-export const RegisterPlayer = () =>{
-    let [routerRes , setRouterRes]= useState("Before Router res")
-    function apiCall(){
-        console.log("api function call is run");
-        fetch("http://localhost:5000")
-            .then(res => res.text())
-            .then(res => setRouterRes(res));
+    function handleOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
+        setPlayerName(event.target.value);
     }
-    return <form>
-        <label>Enter your name: <input type="string" value=""/></label>
-        <button onClick={(event)=>{event.preventDefault();apiCall()}}>Register as player 1</button>
-        <label>{routerRes}</label>
-    </form>
-    
-}
+    function generateGame(): RegisteredGame {
+        const obj = { gameId: '001', player1Name: playerName };
+
+        return obj;
+    }
+    function apiCall(event: React.FormEvent<HTMLButtonElement>): void {
+        event.preventDefault();
+
+        // create a game Id, send the player name as well
+        createRequest(generateGame())
+            .then(res => res.text())
+            .then(res => {
+                if (res != '') {
+                    history.push('/board', res);
+                }
+            });
+    }
+
+    return (
+        <React.Fragment>
+            <SubmitPlayer
+                playerName={playerName}
+                onChange={handleOnChange}
+                onClick={apiCall}
+                serverRes={serverResponse}
+            />
+        </React.Fragment>
+    );
+};
+
+export { RegisterPlayer };
