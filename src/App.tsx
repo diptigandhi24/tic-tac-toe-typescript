@@ -12,8 +12,7 @@ function App() {
                 <Switch>
                     <Route path="/registerPlayer" component={RegisterPlayer} />
                     <Route path="/" exact component={Home} />
-                    <Route path="/board" render={(name)=><AddSecondPlayer name={name}}/>
-                    </Route>
+                    <Route path="/board" render={props => <AddSecondPlayer name={props.name} />} />
                 </Switch>
             </div>
         </Router>
