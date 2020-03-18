@@ -29,7 +29,8 @@ const RegisterPlayer: React.FC = () => {
             .then(res => res.text())
             .then(res => {
                 if (res != '') {
-                    history.push('/board', res);
+                    console.log('Response from server', res, typeof res);
+                    history.push(`/board/${res}/Awesome`);
                 }
             });
     }

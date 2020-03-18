@@ -1,10 +1,19 @@
 import React from 'react';
+import { RouteComponentProps, useParams } from 'react-router-dom';
 
-type PlayersDetail = {
+interface RouteParams {
     name: string;
-};
-const AddSecondPlayer: React.FC<PlayersDetail> = (props: PlayersDetail) => {
-    return <h1>Hello {props.name} you are player 1</h1>;
+    age: string;
+}
+
+const AddSecondPlayer: React.FC<{}> = () => {
+    const params = useParams<RouteParams>();
+    console.log('The compoenent received: ', params);
+    return (
+        <h1>
+            Hello {params.name} you are player 1 {params.age}
+        </h1>
+    );
 };
 
 export default AddSecondPlayer;
