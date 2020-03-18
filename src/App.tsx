@@ -12,7 +12,7 @@ function App() {
                 <Switch>
                     <Route path="/registerPlayer" component={RegisterPlayer} />
                     <Route path="/" exact component={Home} />
-                    <Route path="/board/:name/:age" component={AddSecondPlayer} />
+                    <Route path="/board" component={AddSecondPlayer} />
                 </Switch>
             </div>
         </Router>

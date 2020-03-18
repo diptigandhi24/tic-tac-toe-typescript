@@ -1,17 +1,17 @@
 import React from 'react';
-import { RouteComponentProps, useParams } from 'react-router-dom';
-
-interface RouteParams {
-    name: string;
-    age: string;
-}
+import { useLocation } from 'react-router-dom';
+import { Location } from 'history';
 
 const AddSecondPlayer: React.FC<{}> = () => {
-    const params = useParams<RouteParams>();
-    console.log('The compoenent received: ', params);
+    const location = useLocation<{
+        player1Name: Location<{} | null | undefined>;
+        playerId: Location<{} | null | undefined>;
+    }>();
+    console.log('Location', location.state);
+    console.log('The compoenent received: ', location);
     return (
         <h1>
-            Hello {params.name} you are player 1 {params.age}
+            Hello {location.state.player1Name} welcome to {location.state.playerId}
         </h1>
     );
 };
