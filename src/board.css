@@ -1,7 +1,24 @@
-ul{
-    list-style-type:none;
-    display: inline-block;
-    margin:100px 0px 0px;
-    padding:0px;
-    /* flex-direction: column; */
+ul {
+    list-style-type: none;
+    margin: 100px 0px 0px;
+    padding: 0px;
+    display: block; /*It doesnt matter if this is define or not*/
+}
+li {
+    border: 1px solid black;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px; /*check why do we need line-height*/
+    display: inline-block; /* why inline does work and inline block works */
+    vertical-align: middle;
+    font-size: 20px;
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+.enabled {
+    pointer-events: visible;
+    opacity: 1;
 }

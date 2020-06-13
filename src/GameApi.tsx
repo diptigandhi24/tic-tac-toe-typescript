@@ -1,6 +1,6 @@
 import RegisteredGame from './RegisteredGame';
 
-function createRequest(game: RegisteredGame): Promise<Response> {
+function createRequest(game: {}): Promise<Response> {
     console.log('game obj is', game, JSON.stringify(game));
     return fetch('http://localhost:5000', {
         method: 'post',

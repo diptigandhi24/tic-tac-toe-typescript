@@ -1,49 +1,66 @@
 import React, { useState } from 'react';
-
 import SubmitPlayer from './submitPlayer';
-import RegisteredGame from './RegisteredGame';
 import createRequest from './GameApi';
-import Board from './board';
-import { Link } from 'react-router-dom';
-import { useHistory, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import createGameUUID from './createGameId';
+import { useHistory, useParams } from 'react-router-dom';
 
-const RegisterPlayer: React.FC = () => {
-    const [serverResponse, setServerResponse] = useState('');
+//This is the common Registration from for both the player
+// To identify the current player registration is important
+
+const RegisterPlayer: React.FC = props => {
     const history = useHistory();
 
-    const [playerName, setPlayerName] = useState('');
-
+    const [playerName, updatePlayerName] = useState('');
+    const { gameId, playerRegistration } = useParams();
+    console.log('Which Player Registration Form is this? Answer :', playerRegistration);
     function handleOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
-        setPlayerName(event.target.value);
+        updatePlayerName(event.target.value);
     }
-    function generateGame(): RegisteredGame {
-        const obj = { gameId: '001', player1Name: playerName };
 
-        return obj;
-    }
     function apiCall(event: React.FormEvent<HTMLButtonElement>): void {
         event.preventDefault();
-
         // create a game Id, send the player name as well
-        createRequest(generateGame())
+        const playerDetails = {
+            playerName: event.currentTarget.value,
+            gameId: gameId == undefined ? createGameUUID() : gameId,
+        };
+        console.log('getting the gameId', gameId, playerDetails.gameId);
+        createRequest(playerDetails)
             .then(res => res.text())
             .then(res => {
-                if (res != '') {
-                    const resObj = JSON.parse(res);
+                if (res !== '') {
                     console.log('Response from server', res, typeof res);
-                    history.push({ pathname: `/board`, state: resObj });
+                    const resObj = JSON.parse(res);
+                    console.log('Let print the resOBj', resObj.playerInfo.name);
+                    if (resObj.beginGame == false) {
+                        const player1Info = {
+                            player1Name: resObj.playerInfo.name,
+                            password: resObj.playerInfo.password,
+                            boardIdentity: playerRegistration,
+                            gameId: resObj.gameId,
+                        };
+                        console.log('Information send to Add Second player component', player1Info);
+                        history.push({ pathname: `/addSecondPlayer`, state: { ...player1Info } });
+                    }
+                    if (resObj.beginGame == true) {
+                        //It comes here when both the player are register and makes call to board Component
+                        const playerInfo = {
+                            player1Name: resObj.playerInfo.player1Name,
+                            player2Name: resObj.playerInfo.player2Name,
+                            boardIdentity: playerRegistration,
+                            gameId: resObj.gameId,
+                            password: resObj.playerInfo.password,
+                        };
+
+                        history.push({ pathname: `/board/${playerInfo.boardIdentity}`, state: playerInfo });
+                    }
                 }
             });
     }
 
     return (
         <React.Fragment>
-            <SubmitPlayer
-                playerName={playerName}
-                onChange={handleOnChange}
-                onClick={apiCall}
-                serverRes={serverResponse}
-            />
+            <SubmitPlayer onChange={handleOnChange} onClick={apiCall} value={playerName} />
         </React.Fragment>
     );
 };
