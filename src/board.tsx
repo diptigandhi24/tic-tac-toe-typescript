@@ -1,5 +1,5 @@
 //create board of 3 x 3 which can later be converted to n x n
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import Square from './square';
@@ -15,8 +15,12 @@ const Board: React.FC<{}> = () => {
         password: string;
         boardIdentity: string;
     }>();
-
+    console.log('Creating New Board Component');
     const [player, nextPlayer] = useState<Array<string>>(Array(9).fill(''));
+    console.log('New State', player);
+    useEffect(() => {
+        console.log('After updating the state useEffect', player);
+    });
     const [playerCharacter, setCharacter] = useState('x');
     const boardIdentity = location.state.boardIdentity;
     const communicationInfo = {
@@ -30,20 +34,25 @@ const Board: React.FC<{}> = () => {
 
     function updateboardFeild(updateInfo: { id: string; rowId: string; colId: string }): void {
         const { id, rowId, colId } = updateInfo;
-        const updateBoard: Array<string> = [...player];
-        // console.log('Selected box id');
-        setCharacter(prevState => {
-            return prevState != 'x' ? 'x' : 'o';
-        });
+        // const updateBoard = [...player];
+        // console.log('OLD STATE THAT PASS TO AN EMPTY ARRAY', updateBoard, player);
+        // setCharacter(prevState => {
+        //     return prevState != 'x' ? 'x' : 'o';
+        // });
+        setCharacter('X');
         // console.log('Before board Value', id, updateBoard);
-        updateBoard[parseInt(id)] = playerCharacter;
+        // updateBoard[parseInt(id)] = playerCharacter;
         // console.log('After board Value', updateBoard[parseInt(id)], updateBoard, playerCharacter);
         // console.log('Updated state data', [...updateBoard], player);
-        nextPlayer(updateBoard);
-        const result = lookForWinner(rowId, colId, playerCharacter);
-        if (result != 'Done') {
-            setWinner(result);
-        }
+        nextPlayer(prevState => {
+            const updateBoard: Array<string> = [...prevState];
+            updateBoard[parseInt(id)] = playerCharacter;
+            return updateBoard;
+        });
+        // const result = lookForWinner(rowId, colId, playerCharacter);
+        // if (result != 'Done') {
+        //     setWinner(result);
+        // }
         // setMyturn(preState => !preState);
     }
 
@@ -57,7 +66,7 @@ const Board: React.FC<{}> = () => {
         while (clearIntervaltest == false) {
             await sleep(10000);
             if (requestMove.gameId != undefined) {
-                console.log('gameId is defined', requestMove.gameId);
+                // console.log('gameId is defined', requestMove.gameId);
                 fetch(`http://localhost:5000/getplayermove`, {
                     method: 'post',
                     body: JSON.stringify(requestMove),
@@ -66,15 +75,15 @@ const Board: React.FC<{}> = () => {
                     .then(res => res.text())
                     .then(res => {
                         const resObj = JSON.parse(res);
-                        console.log('player1 has made a move', resObj);
+                        // console.log('player1 has made a move', resObj);
                         // if (clearIntervaltest == true) {
                         //     console.log('clear the interval');
                         //     clearInterval(nextRequest);
                         // }
                         if (resObj.yourTurn == true) {
-                            console.log('Inside If condition of update res');
+                            // console.log('Inside If condition of update res');
                             clearIntervaltest = true;
-
+                            console.log('Checking the access to state', player);
                             updateboardFeild({ id: resObj.id, rowId: resObj.rowId, colId: resObj.colId });
 
                             // setMyturn(preState => !preState);
@@ -130,7 +139,7 @@ const Board: React.FC<{}> = () => {
                 console.log('Respond receive from the server', JSON.parse(res));
             });
         // setMyturn(preState => !preState);
-        requestForNextMove();
+        // requestForNextMove();
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
@@ -159,7 +168,7 @@ const Board: React.FC<{}> = () => {
     }
     if (boardIdentity == 'player2') {
         console.log('I am player2 So requesting for Player1 Move');
-        // requestForNextMove();
+        requestForNextMove();
     }
     return (
         <div>
