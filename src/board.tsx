@@ -16,11 +16,13 @@ const Board: React.FC<{}> = () => {
         boardIdentity: string;
     }>();
     console.log('Creating New Board Component');
-    const [player, nextPlayer] = useState<Array<string>>(Array(9).fill(''));
-    console.log('New State', player);
+    const [myTurn, setMyturn] = useState(location.state.boardIdentity == 'player2' ? true : false);
+    const [player, nextPlayer] = useState<Array<string>>(Array(16).fill(''));
     useEffect(() => {
         console.log('After updating the state useEffect', player);
-    });
+        setMyturn(preState => !preState);
+        console.log('Is it my turn', myTurn);
+    }, [player]);
     const [playerCharacter, setCharacter] = useState('x');
     const boardIdentity = location.state.boardIdentity;
     const communicationInfo = {
@@ -29,42 +31,31 @@ const Board: React.FC<{}> = () => {
         password: location.state.password,
     };
     const [declareWinner, setWinner] = useState(' ');
-    // const [myTurn, setMyturn] = useState(location.state.boardIdentity == 'player1' ? true : false);
-    // console.log('Print the boardIndentity', boardIdentity, typeof boardIdentity, communicationInfo.gameId);
+
+    console.log('Set Whose Turn is it', myTurn);
 
     function updateboardFeild(updateInfo: { id: string; rowId: string; colId: string }): void {
         const { id, rowId, colId } = updateInfo;
-        // const updateBoard = [...player];
-        // console.log('OLD STATE THAT PASS TO AN EMPTY ARRAY', updateBoard, player);
-        // setCharacter(prevState => {
-        //     return prevState != 'x' ? 'x' : 'o';
-        // });
-        setCharacter('X');
-        // console.log('Before board Value', id, updateBoard);
-        // updateBoard[parseInt(id)] = playerCharacter;
-        // console.log('After board Value', updateBoard[parseInt(id)], updateBoard, playerCharacter);
-        // console.log('Updated state data', [...updateBoard], player);
+        setCharacter(boardIdentity == 'player1' ? 'x' : 'o');
         nextPlayer(prevState => {
             const updateBoard: Array<string> = [...prevState];
             updateBoard[parseInt(id)] = playerCharacter;
             return updateBoard;
         });
-        // const result = lookForWinner(rowId, colId, playerCharacter);
-        // if (result != 'Done') {
-        //     setWinner(result);
-        // }
         // setMyturn(preState => !preState);
+        // console.log('After updating myTurn', myTurn);
+        const result = lookForWinner(rowId, colId, playerCharacter);
+        if (result != 'Done') {
+            setWinner(result);
+        }
     }
 
-    function sleep(ms: number): Promise<number> {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    async function requestForNextMove(): Promise<void> {
+    function requestForNextMove(): void {
         const requestMove = { ...communicationInfo };
-        let clearIntervaltest = false;
+        // let clearIntervaltest = false;
+        // let count = 0;
 
-        while (clearIntervaltest == false) {
-            await sleep(10000);
+        const interval = setInterval(() => {
             if (requestMove.gameId != undefined) {
                 // console.log('gameId is defined', requestMove.gameId);
                 fetch(`http://localhost:5000/getplayermove`, {
@@ -82,45 +73,15 @@ const Board: React.FC<{}> = () => {
                         // }
                         if (resObj.yourTurn == true) {
                             // console.log('Inside If condition of update res');
-                            clearIntervaltest = true;
+                            clearInterval(interval);
                             console.log('Checking the access to state', player);
                             updateboardFeild({ id: resObj.id, rowId: resObj.rowId, colId: resObj.colId });
-
-                            // setMyturn(preState => !preState);
+                        } else {
+                            console.log('Player has not made amove');
                         }
-                        return resObj;
                     });
             }
-            // if (clearIntervaltest == true) {
-            //     console.log('clear the interval');
-            //     clearInterval(nextRequest);
-            // }
-            // if (requestMove.gameId != undefined) {
-            //     console.log('gameId is defined', requestMove.gameId);
-            //     fetch(`http://localhost:5000/getplayermove`, {
-            //         method: 'post',
-            //         body: JSON.stringify(requestMove),
-            //         headers: { 'Content-Type': 'application/json' },
-            //     })
-            //         .then(res => res.text())
-            //         .then(res => {
-            //             const resObj = JSON.parse(res);
-            //             console.log('player1 has made a move', resObj);
-            //             if (resObj.yourTurn == true) {
-            //                 console.log('Inside If condition of update res', resObj, nextRequest);
-            //                 clearIntervaltest = true;
-            //             }
-            //             return resObj;
-            //         })
-            //         .then(res => {
-            //             console.log('AfterClear function', nextRequest);
-            //             if (res.yourTurn == true) {
-            //                 setMyturn(preState => !preState);
-            //                 updateboardFeild({ id: res.id, rowId: res.rowId, colId: res.colId });
-            //             }
-            //         });
-            // }
-        }
+        }, 5000);
     }
     function updatePlayerMove(rowId: string, colId: string, squareId: string): void {
         const playerMove = {
@@ -138,8 +99,8 @@ const Board: React.FC<{}> = () => {
             .then(res => {
                 console.log('Respond receive from the server', JSON.parse(res));
             });
-        // setMyturn(preState => !preState);
-        // requestForNextMove();
+
+        requestForNextMove();
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
@@ -150,7 +111,7 @@ const Board: React.FC<{}> = () => {
         updatePlayerMove(rowId, colId, id);
     };
     function printRow(): JSX.Element[] {
-        const boardlength = 3;
+        const boardlength = 4;
         const board = [];
         let count = 0;
         for (let row = 0; row < boardlength; row++) {
@@ -176,10 +137,8 @@ const Board: React.FC<{}> = () => {
             <h4>Player1:{location.state.player1Name} </h4>
             <h4>Player2:{location.state.player2Name} </h4>
             {declareWinner == ' ' ? null : <h4>Winner is {declareWinner} </h4>}
-            {/* <h4>{myTurn == true ? 'make a move' : 'waiting for other player'}</h4> */}
-            {/* <ul className={myTurn == true ? 'enabled' : 'disabled'}>{printRow()}</ul> */}
-            <ul className={'enabled'}>{printRow()}</ul>
-            {console.log('updated player', player)}
+            <h4>{myTurn == true ? 'make a move' : 'waiting for other player'}</h4>
+            <ul className={myTurn == true ? 'enabled' : 'disabled'}>{printRow()}</ul>
         </div>
     );
 };
