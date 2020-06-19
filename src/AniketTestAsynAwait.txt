@@ -1,0 +1,15 @@
+let beginLoop = true
+while(beginLoop) {
+    await someSecondsDelay()
+
+    let response = await network()
+    if(response.youtTurn) {
+        // my turn
+        beginLoop = false
+    } else {
+        // other thing
+    }
+}
+
+async fun network() {}
+async fun someSecondsDelay(numSeconds) {}

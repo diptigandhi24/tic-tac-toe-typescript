@@ -23,8 +23,11 @@ const Board: React.FC<{}> = () => {
         setMyturn(preState => !preState);
         console.log('Is it my turn', myTurn);
     }, [player]);
-    const [playerCharacter, setCharacter] = useState('x');
     const boardIdentity = location.state.boardIdentity;
+    const boardChar = boardIdentity == 'player1' ? 'X' : 'O';
+    const rivalChar = boardChar == 'X' ? 'O' : 'X';
+    const rivalPlayer = boardIdentity == 'player1' ? 'player2' : 'player1';
+    console.table({ boardIdentity, rivalPlayer, boardChar, rivalChar });
     const communicationInfo = {
         gameId: location.state.gameId,
         player: location.state.boardIdentity,
@@ -32,11 +35,15 @@ const Board: React.FC<{}> = () => {
     };
     const [declareWinner, setWinner] = useState(' ');
 
-    console.log('Set Whose Turn is it', myTurn);
-
-    function updateboardFeild(updateInfo: { id: string; rowId: string; colId: string }): void {
+    function updateboardFeild(updateInfo: { id: string; rowId: string; colId: string }, currentChar: string): void {
         const { id, rowId, colId } = updateInfo;
-        setCharacter(boardIdentity == 'player1' ? 'x' : 'o');
+        let playerCharacter = '';
+        if (currentChar == boardIdentity) {
+            playerCharacter = boardChar;
+        } else {
+            playerCharacter = rivalChar;
+        }
+        // setCharacter(boardIdentity == 'player1' ? 'x' : 'o');
         nextPlayer(prevState => {
             const updateBoard: Array<string> = [...prevState];
             updateBoard[parseInt(id)] = playerCharacter;
@@ -55,7 +62,7 @@ const Board: React.FC<{}> = () => {
         // let clearIntervaltest = false;
         // let count = 0;
 
-        const interval = setInterval(() => {
+        const interval = setTimeout(() => {
             if (requestMove.gameId != undefined) {
                 // console.log('gameId is defined', requestMove.gameId);
                 fetch(`http://localhost:5000/getplayermove`, {
@@ -73,15 +80,15 @@ const Board: React.FC<{}> = () => {
                         // }
                         if (resObj.yourTurn == true) {
                             // console.log('Inside If condition of update res');
-                            clearInterval(interval);
-                            console.log('Checking the access to state', player);
-                            updateboardFeild({ id: resObj.id, rowId: resObj.rowId, colId: resObj.colId });
+                            clearTimeout(interval);
+                            console.log('Received', resObj.id, resObj.rowId, resObj.colId);
+                            updateboardFeild({ id: resObj.id, rowId: resObj.rowId, colId: resObj.colId }, rivalPlayer);
                         } else {
                             console.log('Player has not made amove');
                         }
                     });
             }
-        }, 5000);
+        }, 10000);
     }
     function updatePlayerMove(rowId: string, colId: string, squareId: string): void {
         const playerMove = {
@@ -107,7 +114,7 @@ const Board: React.FC<{}> = () => {
         const id = event.currentTarget.id;
         const rowId = event.currentTarget.dataset.rowid || '';
         const colId = event.currentTarget.dataset.colid || '';
-        updateboardFeild({ id, rowId, colId });
+        updateboardFeild({ id, rowId, colId }, boardIdentity);
         updatePlayerMove(rowId, colId, id);
     };
     function printRow(): JSX.Element[] {
