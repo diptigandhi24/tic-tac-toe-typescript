@@ -57,12 +57,12 @@ const Board: React.FC<{}> = () => {
         }
     }
 
-    function requestForNextMove(): void {
+    async function requestForNextMove(): Promise<any> {
         const requestMove = { ...communicationInfo };
-        // let clearIntervaltest = false;
+        let clearIntervaltest = false;
         // let count = 0;
-
-        const interval = setTimeout(() => {
+        while (clearIntervaltest == false) {
+            await new Promise(resolve => setTimeout(resolve, 15000));
             if (requestMove.gameId != undefined) {
                 // console.log('gameId is defined', requestMove.gameId);
                 fetch(`http://localhost:5000/getplayermove`, {
@@ -73,23 +73,19 @@ const Board: React.FC<{}> = () => {
                     .then(res => res.text())
                     .then(res => {
                         const resObj = JSON.parse(res);
-                        // console.log('player1 has made a move', resObj);
-                        // if (clearIntervaltest == true) {
-                        //     console.log('clear the interval');
-                        //     clearInterval(nextRequest);
-                        // }
                         if (resObj.yourTurn == true) {
                             // console.log('Inside If condition of update res');
-                            clearTimeout(interval);
+                            clearIntervaltest = true;
                             console.log('Received', resObj.id, resObj.rowId, resObj.colId);
                             updateboardFeild({ id: resObj.id, rowId: resObj.rowId, colId: resObj.colId }, rivalPlayer);
                         } else {
-                            console.log('Player has not made amove');
+                            console.log('Waiting');
                         }
                     });
             }
-        }, 10000);
+        }
     }
+
     function updatePlayerMove(rowId: string, colId: string, squareId: string): void {
         const playerMove = {
             ...communicationInfo,
@@ -107,7 +103,10 @@ const Board: React.FC<{}> = () => {
                 console.log('Respond receive from the server', JSON.parse(res));
             });
 
-        requestForNextMove();
+        setTimeout(() => {
+            requestForNextMove();
+            console.log('Successfully waited before asking for player move');
+        }, 20000);
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
