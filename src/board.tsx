@@ -125,12 +125,19 @@ const Board: React.FC<{}> = () => {
             for (let col = 0; col < boardlength; col++) {
                 // console.log('Value of count', count);
                 board.push(
-                    <Square id={`${count}`} rowId={row} colId={col} value={player[count]} onClick={handleClick} />,
+                    <Square
+                        key={count}
+                        id={`${count}`}
+                        rowId={row}
+                        colId={col}
+                        value={player[count]}
+                        onClick={handleClick}
+                    />,
                 );
                 count = count + 1;
             }
 
-            board.push(<br></br>);
+            board.push(<br key={`row-${row}`}></br>);
         }
         return board;
     }

@@ -25,7 +25,7 @@ interface Squareprops {
 const Square = memo(function SquareComponent(props: Squareprops): JSX.Element {
     // console.log('The row and col are', props.rowId, props.colId);
     return (
-        <li key={props.id} id={props.id} onClick={props.onClick} data-rowid={props.rowId} data-colid={props.colId}>
+        <li id={props.id} onClick={props.onClick} data-rowid={props.rowId} data-colid={props.colId}>
             {props.value}
         </li>
     );
