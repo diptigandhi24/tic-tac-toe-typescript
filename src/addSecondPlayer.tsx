@@ -21,7 +21,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
         };
         console.log('Requsting for the second player Name', playerDetail);
         function checkIfPlayerTwoRegister(): void {
-            fetch(`http://localhost:5000/requestingPlayer2Details`, {
+            fetch(`https://tictactoeremote.herokuapp.com/requestingPlayer2Details`, {
                 method: 'post',
                 body: JSON.stringify(playerDetail),
                 headers: { 'Content-Type': 'application/json' },
@@ -62,7 +62,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
             <h1>player1: {location.state.player1Name}</h1>
             <h1>Invite Player2 with the given link</h1>
             <p style={{ color: 'red' }}>
-                <span>http://localhost:3000/registerPlayer/player2/{location.state.gameId}</span>
+                <span>https://tictactoeremote.herokuapp.com/registerPlayer/player2/{location.state.gameId}</span>
             </p>
         </React.Fragment>
     );
