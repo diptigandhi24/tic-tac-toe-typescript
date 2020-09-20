@@ -137,7 +137,7 @@ const Board: React.FC<{}> = () => {
                 count = count + 1;
             }
 
-            board.push(<br></br>);
+            // board.push(<br></br>);
         }
         return board;
     }
