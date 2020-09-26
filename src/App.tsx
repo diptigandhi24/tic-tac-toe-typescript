@@ -11,9 +11,9 @@ function App() {
         <Router>
             <div className="App">
                 <Switch>
-                    <Route path="/registerPlayer/:playerRegistration?/:gameId?" component={RegisterPlayer} />
+                    <Route path="/register-player/:player-registration?/:gameId?" component={RegisterPlayer} />
                     <Route path="/" exact component={Home} />
-                    <Route path="/addSecondPlayer" component={AddSecondPlayer} />
+                    <Route path="/add-second-player" component={AddSecondPlayer} />
                     <Route path="/board/:playerName" component={() => <Board key={(count += 1)} />} />
                 </Switch>
             </div>
