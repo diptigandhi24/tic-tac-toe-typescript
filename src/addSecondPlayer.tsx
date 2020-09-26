@@ -22,7 +22,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
         };
         console.log('Requsting for the second player Name', playerDetail);
         function checkIfPlayerTwoRegister(): void {
-            fetch(`${API_ROOT}/requestingPlayer2Details`, {
+            fetch(`${API_ROOT}/requesting-player2-details`, {
                 method: 'post',
                 body: JSON.stringify(playerDetail),
                 headers: { 'Content-Type': 'application/json' },
@@ -63,7 +63,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
             <h1>player1: {location.state.player1Name}</h1>
             <h1>Invite Player2 with the given link</h1>
             <p style={{ color: 'red' }}>
-                <span>{`${API_ROOT}/registerPlayer/player2/${location.state.gameId}`}</span>
+                <span>{`${API_ROOT}/register-player/player2/${location.state.gameId}`}</span>
             </p>
         </React.Fragment>
     );

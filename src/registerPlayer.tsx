@@ -7,7 +7,7 @@ import { useHistory, useParams } from 'react-router-dom';
 //This is the common Registration from for both the player
 // To identify the current player registration is important
 
-const RegisterPlayer: React.FC = props => {
+const RegisterPlayer: React.FC = () => {
     const history = useHistory();
 
     const [playerName, updatePlayerName] = useState('');
@@ -32,7 +32,8 @@ const RegisterPlayer: React.FC = props => {
                     console.log('Response from server', res, typeof res);
                     const resObj = JSON.parse(res);
                     console.log('Let print the resOBj', resObj.playerInfo.name);
-                    if (resObj.beginGame == false) {
+                    // if resObj.beginGame === false
+                    if (!resObj.beginGame) {
                         const player1Info = {
                             player1Name: resObj.playerInfo.name,
                             password: resObj.playerInfo.password,
@@ -40,9 +41,9 @@ const RegisterPlayer: React.FC = props => {
                             gameId: resObj.gameId,
                         };
                         console.log('Information send to Add Second player component', player1Info);
-                        history.push({ pathname: `/addSecondPlayer`, state: { ...player1Info } });
-                    }
-                    if (resObj.beginGame == true) {
+                        history.push({ pathname: `/add-second-player`, state: { ...player1Info } });
+                    } else {
+                        // if resObj.beginGame === true
                         //It comes here when both the player are register and makes call to board Component
                         const playerInfo = {
                             player1Name: resObj.playerInfo.player1Name,
