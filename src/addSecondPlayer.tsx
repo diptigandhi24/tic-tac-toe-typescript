@@ -1,6 +1,7 @@
 import React from 'react';
-import { useLocation, useHistory, useParams } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Location } from 'history';
+import { API_ROOT } from './constants';
 
 const AddSecondPlayer: React.FC<{}> = () => {
     const location = useLocation<{
@@ -21,7 +22,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
         };
         console.log('Requsting for the second player Name', playerDetail);
         function checkIfPlayerTwoRegister(): void {
-            fetch(`https://tictactoeremote.herokuapp.com/requestingPlayer2Details`, {
+            fetch(`${API_ROOT}/requestingPlayer2Details`, {
                 method: 'post',
                 body: JSON.stringify(playerDetail),
                 headers: { 'Content-Type': 'application/json' },
@@ -39,7 +40,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
                                 resObj.gameId,
                                 location.state.gameId,
                             );
-                            clearInterval(untilPlayer2Registered);
+                            // clearInterval(untilPlayer2Registered);
                             const playerInfo = {
                                 player1Name: resObj.playerInfo.player1Name,
                                 player2Name: resObj.playerInfo.player2Name,
@@ -62,7 +63,9 @@ const AddSecondPlayer: React.FC<{}> = () => {
             <h1>player1: {location.state.player1Name}</h1>
             <h1>Invite Player2 with the given link</h1>
             <p style={{ color: 'red' }}>
-                <span>https://tictactoeremote.herokuapp.com/registerPlayer/player2/{location.state.gameId}</span>
+                <span>
+                    `${API_ROOT}/registerPlayer/player2/${location.state.gameId}`
+                </span>
             </p>
         </React.Fragment>
     );

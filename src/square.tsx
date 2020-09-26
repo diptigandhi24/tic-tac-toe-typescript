@@ -1,19 +1,19 @@
-import React, { memo, JSXElementConstructor } from 'react';
+import React, { memo } from 'react';
 import './board.css';
-import { Button } from '@storybook/react/demo';
+// import { Button } from '@storybook/react/demo';
 
 //create a single square input which displays the x or y;
-const square = {
-    width: '50px',
-    height: '50px',
-    border: '1px solid black',
-    'background-color': 'white',
-    'text-align': 'center',
-    padding: '0px',
-    margin: '0px',
-    'font-size': '18px',
-    overflow: 'hidden',
-};
+// const square = {
+//     width: '50px',
+//     height: '50px',
+//     border: '1px solid black',
+//     'background-color': 'white',
+//     'text-align': 'center',
+//     padding: '0px',
+//     margin: '0px',
+//     'font-size': '18px',
+//     overflow: 'hidden',
+// };
 
 interface Squareprops {
     value: string;
