@@ -63,9 +63,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
             <h1>player1: {location.state.player1Name}</h1>
             <h1>Invite Player2 with the given link</h1>
             <p style={{ color: 'red' }}>
-                <span>
-                    `${API_ROOT}/registerPlayer/player2/${location.state.gameId}`
-                </span>
+                <span>{`${API_ROOT}/registerPlayer/player2/${location.state.gameId}`}</span>
             </p>
         </React.Fragment>
     );
