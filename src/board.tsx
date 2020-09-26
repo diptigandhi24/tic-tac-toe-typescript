@@ -7,6 +7,8 @@ import './board.css';
 
 import lookForWinner from './winnerDeclaration';
 
+import { API_ROOT } from './constants';
+
 const Board: React.FC<{}> = () => {
     const location = useLocation<{
         player1Name: string | undefined;
@@ -65,7 +67,7 @@ const Board: React.FC<{}> = () => {
             await new Promise(resolve => setTimeout(resolve, 15000));
             if (requestMove.gameId != undefined) {
                 // console.log('gameId is defined', requestMove.gameId);
-                fetch(`http://localhost:5000/getplayermove`, {
+                fetch(`${API_ROOT}/getplayermove`, {
                     method: 'post',
                     body: JSON.stringify(requestMove),
                     headers: { 'Content-Type': 'application/json' },
@@ -93,7 +95,7 @@ const Board: React.FC<{}> = () => {
             colId,
             squareId,
         };
-        fetch(`http://localhost:5000/updateplayermove`, {
+        fetch(`${API_ROOT}/updateplayermove`, {
             method: 'post',
             body: JSON.stringify(playerMove),
             headers: { 'Content-Type': 'application/json' },
