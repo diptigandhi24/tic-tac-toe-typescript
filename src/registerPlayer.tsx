@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SubmitPlayer from './submitPlayer';
-import createRequest from './GameApi';
+import createNewGame from './GameApi';
 import createGameUUID from './createGameId';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -9,30 +9,26 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const RegisterPlayer: React.FC = () => {
     const history = useHistory();
-
-    const [playerName, updatePlayerName] = useState('');
+    //get the params through the url
     const { gameId, playerRegistration } = useParams();
-    console.log('Which Player Registration Form is this? Answer :', playerRegistration);
+    const [playerName, updatePlayerName] = useState('');
+
     function handleOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
         updatePlayerName(event.target.value);
     }
-
     function apiCall(event: React.FormEvent<HTMLButtonElement>): void {
         event.preventDefault();
         // create a game Id, send the player name as well
-        const playerDetails = {
+        const currentRegisterPlayerDetails = {
             playerName: event.currentTarget.value,
+            //create gameId only for new game request
             gameId: gameId == undefined ? createGameUUID() : gameId,
         };
-        console.log('getting the gameId', gameId, playerDetails.gameId);
-        createRequest(playerDetails)
+        createNewGame(currentRegisterPlayerDetails)
             .then(res => res.text())
             .then(res => {
                 if (res !== '') {
-                    console.log('Response from server', res, typeof res);
                     const resObj = JSON.parse(res);
-                    console.log('Let print the resOBj', resObj.playerInfo.name);
-                    // if resObj.beginGame === false
                     if (!resObj.beginGame) {
                         const player1Info = {
                             player1Name: resObj.playerInfo.name,
@@ -40,10 +36,9 @@ const RegisterPlayer: React.FC = () => {
                             boardIdentity: playerRegistration,
                             gameId: resObj.gameId,
                         };
-                        console.log('Information send to Add Second player component', player1Info);
+
                         history.push({ pathname: `/add-second-player`, state: { ...player1Info } });
                     } else {
-                        // if resObj.beginGame === true
                         //It comes here when both the player are register and makes call to board Component
                         const playerInfo = {
                             player1Name: resObj.playerInfo.player1Name,
