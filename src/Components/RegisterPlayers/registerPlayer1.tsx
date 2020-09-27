@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RegistrationForm from './registerationForm';
 import createNewGame from '../../GameApi';
 import createGameUUID from '../../createGameId';
@@ -12,6 +12,40 @@ function RegisterPlayer1() {
     const history = useHistory();
     const { gameId, playerRegistration } = useParams<ParamTypes>();
     const [playerName, updatePlayerName] = useState('');
+
+    const socketConnection = (): void => {
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onopen = function(e): void {
+            console.log(e);
+            alert('[open] Connection established');
+            alert('Sending to server');
+            socket.send('My name is Dipti');
+        };
+
+        socket.onmessage = function(event): void {
+            alert(`[message] Data received from server: ${event.data}`);
+        };
+
+        socket.onclose = function(event): void {
+            if (event.wasClean) {
+                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                // e.g. server process killed or network down
+                // event.code is usually 1006 in this case
+                alert('[close] Connection died');
+            }
+        };
+
+        socket.onerror = function(error): void {
+            alert(`[error] ${error}`);
+        };
+    };
+
+    useEffect(() => {
+        socketConnection();
+    }, []);
+
     function handleOnChange(event: React.ChangeEvent<HTMLInputElement>): void {
         updatePlayerName(event.target.value);
     }
