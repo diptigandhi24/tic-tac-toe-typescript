@@ -22,7 +22,7 @@ const RegisterPlayer: React.FC = () => {
         const currentRegisterPlayerDetails = {
             playerName: event.currentTarget.value,
             //create gameId only for new game request
-            gameId: gameId == undefined ? createGameUUID() : gameId,
+            gameId: gameId === undefined ? createGameUUID() : gameId,
         };
         createNewGame(currentRegisterPlayerDetails)
             .then(res => res.text())

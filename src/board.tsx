@@ -18,7 +18,7 @@ const Board: React.FC<{}> = () => {
         boardIdentity: string;
     }>();
     console.log('Creating New Board Component');
-    const [myTurn, setMyturn] = useState(location.state.boardIdentity == 'player2' ? true : false);
+    const [myTurn, setMyturn] = useState(location.state.boardIdentity === 'player2' ? true : false);
     const [player, nextPlayer] = useState<Array<string>>(Array(16).fill(''));
     useEffect(() => {
         console.log('After updating the state useEffect', player);
@@ -26,9 +26,9 @@ const Board: React.FC<{}> = () => {
         console.log('Is it my turn', myTurn);
     }, [player]);
     const boardIdentity = location.state.boardIdentity;
-    const boardChar = boardIdentity == 'player1' ? 'X' : 'O';
-    const rivalChar = boardChar == 'X' ? 'O' : 'X';
-    const rivalPlayer = boardIdentity == 'player1' ? 'player2' : 'player1';
+    const boardChar = boardIdentity === 'player1' ? 'X' : 'O';
+    const rivalChar = boardChar === 'X' ? 'O' : 'X';
+    const rivalPlayer = boardIdentity === 'player1' ? 'player2' : 'player1';
     console.table({ boardIdentity, rivalPlayer, boardChar, rivalChar });
     const communicationInfo = {
         gameId: location.state.gameId,
@@ -40,12 +40,12 @@ const Board: React.FC<{}> = () => {
     function updateboardFeild(updateInfo: { id: string; rowId: string; colId: string }, currentChar: string): void {
         const { id, rowId, colId } = updateInfo;
         let playerCharacter = '';
-        if (currentChar == boardIdentity) {
+        if (currentChar === boardIdentity) {
             playerCharacter = boardChar;
         } else {
             playerCharacter = rivalChar;
         }
-        // setCharacter(boardIdentity == 'player1' ? 'x' : 'o');
+        // setCharacter(boardIdentity === 'player1' ? 'x' : 'o');
         nextPlayer(prevState => {
             const updateBoard: Array<string> = [...prevState];
             updateBoard[parseInt(id)] = playerCharacter;
@@ -63,7 +63,7 @@ const Board: React.FC<{}> = () => {
         const requestMove = { ...communicationInfo };
         let clearIntervaltest = false;
         // let count = 0;
-        while (clearIntervaltest == false) {
+        while (clearIntervaltest === false) {
             await new Promise(resolve => setTimeout(resolve, 15000));
             if (requestMove.gameId != undefined) {
                 // console.log('gameId is defined', requestMove.gameId);
@@ -75,7 +75,7 @@ const Board: React.FC<{}> = () => {
                     .then(res => res.text())
                     .then(res => {
                         const resObj = JSON.parse(res);
-                        if (resObj.yourTurn == true) {
+                        if (resObj.yourTurn === true) {
                             // console.log('Inside If condition of update res');
                             clearIntervaltest = true;
                             console.log('Received', resObj.id, resObj.rowId, resObj.colId);
@@ -118,12 +118,12 @@ const Board: React.FC<{}> = () => {
         updateboardFeild({ id, rowId, colId }, boardIdentity);
         updatePlayerMove(rowId, colId, id);
     };
-    function printRow(): JSX.Element[] {
+    function createBoard(): JSX.Element[] {
         const boardlength = 4;
         const board = [];
         let count = 0;
+        //Row ID and Col ID helps to implements the win algorithm faster
         for (let row = 0; row < boardlength; row++) {
-            //prints the coloumn
             for (let col = 0; col < boardlength; col++) {
                 // console.log('Value of count', count);
                 board.push(
@@ -143,7 +143,7 @@ const Board: React.FC<{}> = () => {
         }
         return board;
     }
-    if (boardIdentity == 'player2') {
+    if (boardIdentity === 'player2') {
         console.log('I am player2 So requesting for Player1 Move');
         requestForNextMove();
     }
@@ -152,9 +152,9 @@ const Board: React.FC<{}> = () => {
             <h1>Lets begin the game</h1>
             <h4>Player1:{location.state.player1Name} </h4>
             <h4>Player2:{location.state.player2Name} </h4>
-            {declareWinner == ' ' ? null : <h4>Winner is {declareWinner} </h4>}
-            <h4>{myTurn == true ? 'make a move' : 'waiting for other player'}</h4>
-            <ul className={myTurn == true ? 'enabled' : 'disabled'}>{printRow()}</ul>
+            {declareWinner === ' ' ? null : <h4>Winner is {declareWinner} </h4>}
+            <h4>{myTurn === true ? 'make a move' : 'waiting for other player'}</h4>
+            <ul className={myTurn === true ? 'enabled' : 'disabled'}>{createBoard()}</ul>
         </div>
     );
 };

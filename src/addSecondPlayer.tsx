@@ -33,7 +33,7 @@ const AddSecondPlayer: React.FC<{}> = () => {
                         console.log('Before Parsing resonse', res);
                         const resObj = JSON.parse(res);
                         console.log('Response to the request of for player detail', resObj);
-                        if (resObj.beginGame == true) {
+                        if (resObj.beginGame === true) {
                             console.log(
                                 'Yayy Player2 register',
                                 resObj.player2Name,

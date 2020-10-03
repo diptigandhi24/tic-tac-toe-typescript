@@ -14,14 +14,14 @@ const length = 3;
 
 function diagonalUpdateMoves(xyObj: any, value: string, targetRC: string): void {
     console.log('Before', xyObj, xyObj.count, value);
-    if (xyObj.count == 0) {
+    if (xyObj.count === 0) {
         xyObj.value = value;
         xyObj.count = 1;
     } else {
-        if (xyObj.value == value) {
+        if (xyObj.value === value) {
             xyObj.count += 1;
             console.log('After', xyObj.value, xyObj.count, value);
-            winner = xyObj.count == 3 ? value : 'none';
+            winner = xyObj.count === 3 ? value : 'none';
         } else {
             activateDrawRCMove.add(targetRC);
             // console.log(
@@ -35,15 +35,15 @@ function isTheRowColAlreadyActive(xy: any, xyarray: any, value: any, targetRC: a
     const isActive: boolean = xyarray.has(xy);
     const isDraw: boolean = activateDrawRCMove.has(targetRC);
 
-    if (isActive == false && isDraw == false) {
+    if (isActive === false && isDraw === false) {
         xyarray.set(xy, { moveId: value, count: 1 });
         console.log('Current map and its count value', value, xyarray.get(xy).count);
     } else {
         // console.log("Before Value of a count", xyarray.get(xy).count);
-        if (isDraw == false) {
+        if (isDraw === false) {
             if (xyarray.get(xy).moveId === value) {
                 xyarray.get(xy).count += 1;
-                winner = xyarray.get(xy).count == 3 ? value : 'none';
+                winner = xyarray.get(xy).count === 3 ? value : 'none';
                 console.log('Current map and its count value', value, xyarray.get(xy).count);
             } else {
                 activateDrawRCMove.add(targetRC);
@@ -56,12 +56,12 @@ function isTheRowColAlreadyActive(xy: any, xyarray: any, value: any, targetRC: a
 }
 //if the rol/col is active, checkout if the earlier entry and current move belongs to same player or else call it draw
 function lookForDrawRowCol(index: any, array: any, currentplayedValue: any): void {
-    if (currentplayedValue == array.get(index)) {
+    if (currentplayedValue === array.get(index)) {
     }
 }
 
 function updateRowColumnMove(rowX: any, colY: any, value: string): string {
-    // console.log("Entered User Value", rowX, colY, rowX == colY);
+    // console.log("Entered User Value", rowX, colY, rowX === colY);
     // prettier-ignore
     console.log('rowX,Coly', typeof rowX, typeof colY, rowX === colY , (rowX + colY) );
     switch (true) {
@@ -104,8 +104,8 @@ function updateRowColumnMove(rowX: any, colY: any, value: string): string {
             //activateColMove
             isTheRowColAlreadyActive(colY, activateColMove, value, `col${colY}`);
     }
-    if (winner == 'none') {
-        return activateDrawRCMove.size == 8 ? 'DRAW' : 'Done';
+    if (winner === 'none') {
+        return activateDrawRCMove.size === 8 ? 'DRAW' : 'Done';
     } else {
         return winner;
     }
