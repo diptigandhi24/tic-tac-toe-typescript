@@ -54,11 +54,6 @@ function isTheRowColAlreadyActive(xy: any, xyarray: any, value: any, targetRC: a
         }
     }
 }
-//if the rol/col is active, checkout if the earlier entry and current move belongs to same player or else call it draw
-function lookForDrawRowCol(index: any, array: any, currentplayedValue: any): void {
-    if (currentplayedValue === array.get(index)) {
-    }
-}
 
 function updateRowColumnMove(rowX: any, colY: any, value: string): string {
     // console.log("Entered User Value", rowX, colY, rowX === colY);
