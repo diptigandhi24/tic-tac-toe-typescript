@@ -1,0 +1,28 @@
+ul {
+    list-style-type: none;
+    margin: 100px 0px 0px;
+    padding: 0px;
+    display: flex; /*It doesnt matter if this is define or not*/
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 500px;
+}
+li {
+    border: 1px solid black;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px; /*check why do we need line-height*/
+    flex-grow: 4;
+    text-align: center;
+    flex-basis: 100px;
+    flex-shrink: 4;
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+.enabled {
+    pointer-events: visible;
+    opacity: 1;
+}
